@@ -24,10 +24,10 @@ class DefaultLogger extends AbstractLogger implements LoggerInterface
      * Logs with an arbitrary level.
      *
      * @param mixed  $level
-     * @param Stringable|string $message
+     * @param \Stringable|string $message
      * @param array  $context
      */
-    public function log($level, Stringable|string $message, array $context = []): void
+    public function log($level, \Stringable|string $message, array $context = []): void
     {
         error_log(self::PREFIX.' '.strtoupper($level).': '.$message.' '.
             (!empty($context) ? print_r($context, true) : ''));
@@ -36,10 +36,10 @@ class DefaultLogger extends AbstractLogger implements LoggerInterface
     /**
      * Detailed debug information.
      *
-     * @param Stringable|string $message
+     * @param \Stringable|string $message
      * @param array  $context
      */
-    public function debug(Stringable|string $message, array $context = []): void
+    public function debug(\Stringable|string $message, array $context = []): void
     {
         if ($this->debug) {
             $this->log(LogLevel::DEBUG, $message, $context);
