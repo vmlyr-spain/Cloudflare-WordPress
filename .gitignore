@@ -1,4 +1,15 @@
-*.DS_Store
-vendor/
+# Ignore OSX file system junk
+.DS_Store
+
+# Ignore Visual Studio configs
+/.vscode
+
+# Ignore PhpStorm configs
+/.idea
+
+# Libraries installed by Composer etc
+/vendor
+
 xdebug/*
+
 .phpunit.result.cache
