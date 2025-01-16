@@ -6,7 +6,7 @@
     },
     "description": "A Cloudflare plugin for WordPress",
     "license": "BSD-3-Clause",
-    "name": "cloudflare/wordpress-plugin",
+    "name": "cloudflare/cloudflare-wordpress",
     "type": "wordpress-plugin",
     "require": {
         "php": ">=8.1",
@@ -33,7 +33,7 @@
     "_comment": [
         "php-compatibility-install comes from https://github.com/wimg/PHPCompatibility/issues/102#issuecomment-255778195"
     ],
-    "version": "4.12.8",
+    "version": "4.12.9",
     "config": {
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
