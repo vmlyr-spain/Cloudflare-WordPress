@@ -21,64 +21,64 @@ wp_enqueue_script('cf-compiledjs', plugins_url('compiled.js', __FILE__), null, $
 ?>
 <div id="root" class="cloudflare-partners site-wrapper"></div>
 <script>
-//Set global absolute base url
-window.absoluteUrlBase = '<?php echo plugins_url('/cloudflare/'); ?>';
+    //Set global absolute base url
+    window.absoluteUrlBase = '<?php echo plugins_url('/cloudflare-wordpress/'); ?>';
 
-cfCSRFToken = '<?php echo wp_create_nonce(\CF\WordPress\WordPressAPI::API_NONCE); ?>';
-localStorage.cfEmail = '<?php echo $dataStore->getCloudFlareEmail(); ?>';
+    cfCSRFToken = '<?php echo wp_create_nonce(\CF\WordPress\WordPressAPI::API_NONCE); ?>';
+    localStorage.cfEmail = '<?php echo $dataStore->getCloudFlareEmail(); ?>';
 
-/*
- * A callback for cf-util-http to proxy all calls to our backend
- *
- * @param {Object} [opts]
- * @param {String} [opts.method] - GET/POST/PUT/PATCH/DELETE
- * @param {String} [opts.url]
- * @param {Object} [opts.parameters]
- * @param {Object} [opts.headers]
- * @param {Object} [opts.body]
- * @param {Function} [opts.onSuccess]
- * @param {Function} [opts.onError]
- */
-window.RestProxyCallback = (opts) => {
-    // Only proxy external REST calls
-    if (opts.url.lastIndexOf('http', 0) === 0) {
-        if (!opts.parameters) {
-            opts.parameters = {};
-        }
-
-        // WordPress Ajax Action
-        opts.parameters['action'] = '<?php echo \CF\WordPress\Hooks::WP_AJAX_ACTION; ?>'
-
-        if (opts.method.toUpperCase() === 'GET') {
-            var clientAPIURL = '<?php echo \CF\API\Client::ENDPOINT; ?>';
-            var pluginAPIURL = '<?php echo \CF\API\Plugin::ENDPOINT; ?>';
-
-            // If opts.url begins with clientAPIURL or pluginAPIURL,
-            // remove the API URL and assign the rest to proxyURL
-            if (opts.url.substring(0, clientAPIURL.length) === clientAPIURL) {
-                opts.parameters['proxyURL'] = opts.url.substring(clientAPIURL.
-                    length);
-                opts.parameters['proxyURLType'] = 'CLIENT';
-            } else if (opts.url.substring(0, pluginAPIURL.length) === pluginAPIURL) {
-                opts.parameters['proxyURL'] = opts.url.substring(pluginAPIURL.length);
-                opts.parameters['proxyURLType'] = 'PLUGIN';
+    /*
+     * A callback for cf-util-http to proxy all calls to our backend
+     *
+     * @param {Object} [opts]
+     * @param {String} [opts.method] - GET/POST/PUT/PATCH/DELETE
+     * @param {String} [opts.url]
+     * @param {Object} [opts.parameters]
+     * @param {Object} [opts.headers]
+     * @param {Object} [opts.body]
+     * @param {Function} [opts.onSuccess]
+     * @param {Function} [opts.onError]
+     */
+    window.RestProxyCallback = (opts) => {
+        // Only proxy external REST calls
+        if (opts.url.lastIndexOf('http', 0) === 0) {
+            if (!opts.parameters) {
+                opts.parameters = {};
             }
+
+            // WordPress Ajax Action
+            opts.parameters['action'] = '<?php echo \CF\WordPress\Hooks::WP_AJAX_ACTION; ?>'
+
+            if (opts.method.toUpperCase() === 'GET') {
+                var clientAPIURL = '<?php echo \CF\API\Client::ENDPOINT; ?>';
+                var pluginAPIURL = '<?php echo \CF\API\Plugin::ENDPOINT; ?>';
+
+                // If opts.url begins with clientAPIURL or pluginAPIURL,
+                // remove the API URL and assign the rest to proxyURL
+                if (opts.url.substring(0, clientAPIURL.length) === clientAPIURL) {
+                    opts.parameters['proxyURL'] = opts.url.substring(clientAPIURL.
+                        length);
+                    opts.parameters['proxyURLType'] = 'CLIENT';
+                } else if (opts.url.substring(0, pluginAPIURL.length) === pluginAPIURL) {
+                    opts.parameters['proxyURL'] = opts.url.substring(pluginAPIURL.length);
+                    opts.parameters['proxyURLType'] = 'PLUGIN';
+                }
+            } else {
+                if (!opts.body) {
+                    opts.body = {};
+                }
+
+                opts.body['cfCSRFToken'] = cfCSRFToken;
+                opts.body['proxyURL'] = opts.url;
+            }
+
+            // WordPress Ajax Global
+            opts.url = ajaxurl;
         } else {
-            if (!opts.body) {
-                opts.body = {};
-            }
-
-            opts.body['cfCSRFToken'] = cfCSRFToken;
-            opts.body['proxyURL'] = opts.url;
+            // To avoid static files getting cached add the version number
+            // to the url
+            var versionNumber = '<?php echo $pluginVersion; ?>';
+            opts.url = absoluteUrlBase + opts.url + '?ver=' + versionNumber;
         }
-
-        // WordPress Ajax Global
-        opts.url = ajaxurl;
-    } else {
-        // To avoid static files getting cached add the version number
-        // to the url
-        var versionNumber = '<?php echo $pluginVersion; ?>';
-        opts.url = absoluteUrlBase + opts.url + '?ver=' + versionNumber;
     }
-}
 </script>

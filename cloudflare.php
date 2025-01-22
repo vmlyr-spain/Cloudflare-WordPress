@@ -1,9 +1,10 @@
 <?php
+
 /*
 Plugin Name: Cloudflare
 Plugin URI: https://blog.cloudflare.com/new-wordpress-plugin/
 Description: Cloudflare speeds up and protects your WordPress site.
-Version: 4.12.10
+Version: 4.12.11
 Requires PHP: 7.2
 Author: Cloudflare, Inc.
 License: BSD-3-Clause
@@ -27,7 +28,7 @@ License: BSD-3-Clause
 // define('CLOUDFLARE_HTTP2_SERVER_PUSH_LOG', true);
 
 // Exit if accessed directly
-if (!defined('ABSPATH')) {
+if (! defined('ABSPATH')) {
     exit;
 }
 
@@ -41,7 +42,7 @@ if (version_compare(PHP_VERSION, CLOUDFLARE_MIN_PHP_VERSION, '<')) {
     require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
     deactivate_plugins(plugin_basename(__FILE__), true);
-    wp_die('<p>The Cloudflare plugin requires a PHP version of at least ' . CLOUDFLARE_MIN_PHP_VERSION . '; you have ' . PHP_VERSION . '.</p>', 'Plugin Activation Error', array('response' => 200, 'back_link' => true));
+    wp_die('<p>The Cloudflare plugin requires a PHP version of at least ' . CLOUDFLARE_MIN_PHP_VERSION . '; you have ' . PHP_VERSION . '.</p>', 'Plugin Activation Error', ['response' => 200, 'back_link' => true]);
 }
 
 // Plugin uses namespaces. To support old PHP version which doesn't support
